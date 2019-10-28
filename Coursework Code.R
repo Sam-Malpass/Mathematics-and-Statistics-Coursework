@@ -20,6 +20,27 @@ sv
 # Question 4
 
 # Question 5
+# i) Write R code to solve a system of differential equations
+library(deSolve)
+LotVmod <- function (Time, State, Pars) {
+    with(as.list(c(State, Pars)), {
+        dx = x * (a - (g * x) - (b * y))
+        dy = y * (-c + (d * x))
+        return(list(c(dx, dy)))
+    })
+}
+
+# ii) Run code to obtain solution for given values
+Pars <- c(a = 5, b = 0.01, c = 100, d = 0.01, g = 0.0001)
+State <- c(x = 10000, y = 60)
+Time <- seq(0, 5, by = 1)
+out <- as.data.frame(ode(func = LotVmod, y = State, parms = Pars, times = Time))
+matplot(out[,-1], type = "l", xlab = "time", ylab = "population")
+legend("topright", c("Fish", "Humans"), lty = c(1,2), col = c(1,2), box.lwd = 0)
+
+# iii) Find the values of X and Y where the system achieves equilibrium
+# One solution is x = 0, y = 0
+# Other solution is x = (a-by)/g, y = (dxy)/c
 
 # Question 6
 y<-seq(-4.5,4.5,0.1)
