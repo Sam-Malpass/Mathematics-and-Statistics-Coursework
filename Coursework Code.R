@@ -9,6 +9,27 @@ v<-seq(0,100,1)
 curve(gamma(x,shape = v/2,rate = 0.1), from=0, to=0.5)
 
 # Question 2
+# i) Calculate the average of the three faces and plot
+library(bmp)
+face1<- read.bmp('C:/Users/Sam/Documents/R Scripts/Mathematics-and-Statistics-Coursework/face1.bmp')
+face2<- read.bmp('C:/Users/Sam/Documents/R Scripts/Mathematics-and-Statistics-Coursework/face2.bmp')
+face3<- read.bmp('C:/Users/Sam/Documents/R Scripts/Mathematics-and-Statistics-Coursework/face3.bmp')
+X <- list(face1, face2, face3)
+Y <- do.call(cbind, X)
+Y <- array(Y, dim=c(dim(X[[1]]), length(X)))
+av <- apply(Y, c(1,2), mean, na.rm=TRUE)
+image(t(apply(av,2,rev)),col = gray((0:32)/32),axes=F)
+
+# ii) Plot images of the differences in faces
+par(mfrow=c(1,3))
+diff1 <- av - face1
+image(t(apply(diff1,2,rev)),col = gray((0:32)/32),axes=F)
+diff2 <- av - face2
+image(t(apply(diff2,2,rev)),col = gray((0:32)/32),axes=F)
+diff3 <- av - face3
+image(t(apply(diff3,2,rev)),col = gray((0:32)/32),axes=F)
+
+# iii) Based on the covariance matrix of differences calulate the eigenfaces
 
 # Question 3
 # Calculate the singular values and matrices in the singular value decomposition
