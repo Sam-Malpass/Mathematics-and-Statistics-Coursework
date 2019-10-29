@@ -31,6 +31,11 @@ image(t(apply(diff3,2,rev)),col = gray((0:32)/32),axes=F)
 
 # iii) Based on the covariance matrix of differences calulate the eigenfaces
 
+
+
+
+
+
 # Question 3
 # Calculate the singular values and matrices in the singular value decomposition
 
@@ -38,7 +43,17 @@ A<-cbind(c(1,1,1,1),c(2,0,0,0)) # Declare matrix A
 sv<-svd(A)
 sv
 
+
+
+
+
+
 # Question 4
+
+
+
+
+
 
 # Question 5
 # i) Write R code to solve a system of differential equations
@@ -63,24 +78,26 @@ legend("topright", c("Fish", "Humans"), lty = c(1,2), col = c(1,2), box.lwd = 0)
 # One solution is x = 0, y = 0
 # Other solution is x = (a-by)/g, y = (dxy)/c
 
+
+
+
+
+
 # Question 6
-y<-seq(-4.5,4.5,0.1)
-x<-seq(-4.5,4.5,0.1)
-question6<-function(x,y){
-(x^2+y-11)^2+(x+y^2-7)^2
-}
-test<-function(z) {
-(z[,1]^2+z[,2]-11)^2+(z[,1]+z[,2]^2-7)^2
-}
-hold<-function(z) {
-z<-matrix(z,ncol=2)
-f.z<-test(z)
-return(f.z)
-}
-X<-as.matrix(expand.grid(x,y))
-colnames(X)<-c("x","y")
-testy<-hold(X)
-df<-data.frame(X,y)
-plot(question6(x,y))
-out<-optim(c(-4.5,4.5),hold,method="Nelder-Mead")
-out
+question6<-function(vec) (vec[1]^2 + vec[2]-11)^2 + (vec[1] + vec[2]^2 - 7)^2
+func<-function(x1,y1) (x1^2 + y1 - 11)^2 + (x1 + y1^2 - 7)^2
+question6x<- seq(-4.5, 4.5, length.out=50)
+question6y<-question6x
+question6z<-outer(question6x,question6y,func)
+persp(question6x,question6y,question6z,phi=45,theta=45,col="yellow",shade=.65 ,ticktype="detailed", xlab="x", ylab="y", zlab="f(x,y)")
+# Find all minimums
+min1<-optim(c(-4,-4), question6)$par
+min2<-optim(c(2,-2), question6)$par
+min3<-optim(c(2,2), question6)$par
+min4<-optim(c(-4,4), question6)$par
+# Find all maximums
+max1<-optim(c(-3,-4), question6, control=list(fnscale=-1))$par
+max2<-optim(c(4,-4), question6, control=list(fnscale=-1))$par
+max3<-optim(c(-4,4), question6, control=list(fnscale=-1))$par
+max4<-optim(c(4,4), question6, control=list(fnscale=-1))$par
+max5<-optim(c(0,0), question6, control=list(fnscale=-1))$par
