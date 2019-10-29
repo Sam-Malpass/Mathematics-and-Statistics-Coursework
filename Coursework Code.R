@@ -30,7 +30,13 @@ diff3 <- av - face3
 image(t(apply(diff3,2,rev)),col = gray((0:32)/32),axes=F)
 
 # iii) Based on the covariance matrix of differences calulate the eigenfaces
-
+diffvec1<-as.vector(diff1)
+diffvec2<-as.vector(diff2)
+diffvec3<-as.vector(diff3)
+diffall<-cbind(diffvec1,diffvec2,diffvec3)
+covmat<-cov(diffall)
+eigs<-eigen(covmat)$vector
+eigs
 
 
 
