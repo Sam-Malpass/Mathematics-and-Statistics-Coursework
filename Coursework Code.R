@@ -26,16 +26,20 @@ polygon(cord.a,cord.b,col="blue") #plot the polygons in the bounds
 # Question 2
 # i) Calculate the average of the three faces and plot
 library(bmp)
+#read images in
 face1<- read.bmp('C:/Users/Sam/Documents/R Scripts/Mathematics-and-Statistics-Coursework/face1.bmp')
 face2<- read.bmp('C:/Users/Sam/Documents/R Scripts/Mathematics-and-Statistics-Coursework/face2.bmp')
 face3<- read.bmp('C:/Users/Sam/Documents/R Scripts/Mathematics-and-Statistics-Coursework/face3.bmp')
+#add them to a list and get the average
 X <- list(face1, face2, face3)
 Y <- do.call(cbind, X)
 Y <- array(Y, dim=c(dim(X[[1]]), length(X)))
 av <- apply(Y, c(1,2), mean, na.rm=TRUE)
+#rotate and plot the average
 image(t(apply(av,2,rev)),col = gray((0:32)/32),axes=F)
 
 # ii) Plot images of the differences in faces
+#get the differences and plot them all
 par(mfrow=c(1,3))
 diff1 <- av - face1
 image(t(apply(diff1,2,rev)),col = gray((0:32)/32),axes=F)
@@ -45,10 +49,13 @@ diff3 <- av - face3
 image(t(apply(diff3,2,rev)),col = gray((0:32)/32),axes=F)
 
 # iii) Based on the covariance matrix of differences calulate the eigenfaces
+#convert the matrices to vectors
 diffvec1<-as.vector(diff1)
 diffvec2<-as.vector(diff2)
 diffvec3<-as.vector(diff3)
+#concatenate all the vectors
 diffall<-cbind(diffvec1,diffvec2,diffvec3)
+#get the covarience matrix
 covmat<-cov(diffall)
 eigs<-eigen(covmat)$vector
 eigs
@@ -73,7 +80,7 @@ sv
 # Question 5
 # i) Write R code to solve a system of differential equations
 library(deSolve)
-LotVmod <- function (Time, State, Pars) {
+eqsystem <- function (Time, State, Pars) {
 	x <- State[1]
 	y <- State[2]
     with(as.list(c(Pars)), {
@@ -87,7 +94,7 @@ LotVmod <- function (Time, State, Pars) {
 Pars <- c(a = 5, b = 0.01, c = 100, d = 0.01, g = 0.0001)
 State <- c(x = 10000, y = 60)
 Time <- seq(0, 5, by = 0.1)
-out <-ode(func = LotVmod, y = State, parms = Pars, times = Time)
+out <-ode(func = eqsystem, y = State, parms = Pars, times = Time)
 matplot(out[,1], (out[,2:3]), type = "l", xlab = "time", ylab = "population")
 legend("topright", c("Fish", "Humans"), lty = c(1,2), col = c(1,2), box.lwd = 0)
 
