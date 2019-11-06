@@ -3,10 +3,25 @@
 
 # Question 1
 # Write R code to reproduce a graph
+v<-4
+alpha<-v/2
+beta<-2
+avrg<- alpha * beta 
+std.dv<-sqrt(alpha*beta^2)
+range<-seq(0, avrg + 5 * std.dv, 0.01)
+y=dgamma(range, alpha, rate=1/beta)
+plot(range,y,type='l', ylim=c(0,max(y)+0.01),bty="l",xaxt="n",yaxt="n",ylab="", xlab="x",xaxs="i", yaxs="i")
+axis(1, at=0, "0")
+axis(1, at=6, "a")
+axis(1,at=10, "b")
+title(main=expression(paste("X~",{Chi[v]}^{"2"})), cex.main=1.5)
+text(10.5,0.125,cex=1.2, label=expression(paste("f(x)=",frac(1,2^frac("v",2)*Gamma*bgroup("(", frac("v",2), ")"))*paste("x"^paste(frac("v",2)-1),"e"^-frac("x",2), " , x>0"))))
+arrows(9.9,0.045, 8, 0.037, length=0.1, col="red", lwd=2)
+text(12.75,0.045,cex=1.2, label=expression(paste("P(a<",Chi,"<b)=",integral(f(x)*dx,a,b))))
 
-question1exp<-expression(    (1/(2^(v/2)) * Gamma(v/2)) * (x^((v/2)-1)) * (exp(1)^-(x/2))	)
-v<-seq(0,100,1)
-curve(gamma(x,shape = v/2,rate = 0.1), from=0, to=0.5)
+cord.a=c(6,seq(min(6), 10, 0.01),10)
+cord.b=c(0, dgamma(seq(min(6), 10, 0.01),alpha,rate = 1/beta),0)
+polygon(cord.a,cord.b,col="blue")
 
 # Question 2
 # i) Calculate the average of the three faces and plot
@@ -65,19 +80,21 @@ sv
 # i) Write R code to solve a system of differential equations
 library(deSolve)
 LotVmod <- function (Time, State, Pars) {
-    with(as.list(c(State, Pars)), {
-        dx = x * (a - (g * x) - (b * y))
-        dy = y * (-c + (d * x))
+	x <- State[1]
+	y <- State[2]
+    with(as.list(c(Pars)), {
+        dx = x * (a - g*x - b*y)
+        dy = y * (-c + d*x)
         return(list(c(dx, dy)))
     })
 }
-
+# ODE is
 # ii) Run code to obtain solution for given values
 Pars <- c(a = 5, b = 0.01, c = 100, d = 0.01, g = 0.0001)
 State <- c(x = 10000, y = 60)
-Time <- seq(0, 5, by = 1)
-out <- as.data.frame(ode(func = LotVmod, y = State, parms = Pars, times = Time))
-matplot(out[,-1], type = "l", xlab = "time", ylab = "population")
+Time <- seq(0, 5, by = 0.1)
+out <-ode(func = LotVmod, y = State, parms = Pars, times = Time)
+matplot(out[,1], (out[,2:3]), type = "l", xlab = "time", ylab = "population")
 legend("topright", c("Fish", "Humans"), lty = c(1,2), col = c(1,2), box.lwd = 0)
 
 # iii) Find the values of X and Y where the system achieves equilibrium
@@ -107,3 +124,5 @@ max2<-optim(c(4,-4), question6, control=list(fnscale=-1))$par
 max3<-optim(c(-4,4), question6, control=list(fnscale=-1))$par
 max4<-optim(c(4,4), question6, control=list(fnscale=-1))$par
 max5<-optim(c(0,0), question6, control=list(fnscale=-1))$par
+
+
