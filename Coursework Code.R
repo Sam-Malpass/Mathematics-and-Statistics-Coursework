@@ -126,4 +126,32 @@ max3<-optim(c(-4,4), question6, control=list(fnscale=-1))$par
 max4<-optim(c(4,4), question6, control=list(fnscale=-1))$par
 max5<-optim(c(0,0), question6, control=list(fnscale=-1))$par
 
+# Question 7
+experiment<-function(n) 
+{
+iterations<-seq(1,100000,1)
+actors<-seq(1,n,1)
+count<-0
+for(val in iterations)
+{
+babies<-sample(actors)
+for(i in 1:length(actors))
+{
+if(actors[i] == babies[i]) 
+{
+count<-count+1
+break
+}
+}
+}
+return(count / length(iterations))
+}
 
+testset<-seq(2,15,1)
+results<-c()
+for(val in testset)
+{
+results<-c(results, experiment(val))
+}
+
+plot(testset, results, type="l")
