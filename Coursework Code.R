@@ -55,8 +55,7 @@ diffvec2<-as.vector(diff2)
 diffvec3<-as.vector(diff3)
 #concatenate all the vectors
 diffall<-rbind(diffvec1,diffvec2,diffvec3)
-diffall
-#get the covarience matrix
+
 covmat<-cov(diffall)
 covmat
 eigs<-eigen(covmat)$vectors
@@ -66,7 +65,6 @@ eigs
 eigface1<-matrix(eigs[,1], nrow=51, byrow=TRUE)
 eigface2<-matrix(eigs[,2], nrow=51, byrow=TRUE)
 eigface3<-matrix(eigs[,3], nrow=51, byrow=TRUE)
-# image(t(apply(test,3,rev)),col = gray((0:32)/32),axes=F)
 par(mfrow=c(1,3))
 image(t(apply(t(eigface1),2,rev)), col=gray((0:32)/32), axes=F)
 image(t(apply(t(eigface2),2,rev)), col=gray((0:32)/32), axes=F)
