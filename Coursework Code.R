@@ -41,11 +41,11 @@ image(t(apply(av,2,rev)),col = gray((0:32)/32),axes=F)
 # ii) Plot images of the differences in faces
 #get the differences and plot them all
 par(mfrow=c(1,3))
-diff1 <- av - face1
+diff1 <- face1 - av
 image(t(apply(diff1,2,rev)),col = gray((0:32)/32),axes=F)
-diff2 <- av - face2
+diff2 <- face2 - av
 image(t(apply(diff2,2,rev)),col = gray((0:32)/32),axes=F)
-diff3 <- av - face3
+diff3 <- face3 - av
 image(t(apply(diff3,2,rev)),col = gray((0:32)/32),axes=F)
 
 # iii) Based on the covariance matrix of differences calulate the eigenfaces
