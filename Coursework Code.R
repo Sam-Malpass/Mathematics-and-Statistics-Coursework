@@ -54,15 +54,23 @@ diffvec1<-as.vector(diff1)
 diffvec2<-as.vector(diff2)
 diffvec3<-as.vector(diff3)
 #concatenate all the vectors
-diffall<-cbind(diffvec1,diffvec2,diffvec3)
+diffall<-rbind(diffvec1,diffvec2,diffvec3)
+diffall
 #get the covarience matrix
 covmat<-cov(diffall)
-eigs<-eigen(covmat)$vector
+covmat
+eigs<-eigen(covmat)$vectors
 eigs
 
-
-
-
+# DO THIS FOR ALL THREE SAM
+eigface1<-matrix(eigs[,1], nrow=51, byrow=TRUE)
+eigface2<-matrix(eigs[,2], nrow=51, byrow=TRUE)
+eigface3<-matrix(eigs[,3], nrow=51, byrow=TRUE)
+# image(t(apply(test,3,rev)),col = gray((0:32)/32),axes=F)
+par(mfrow=c(1,3))
+image(t(apply(t(eigface1),2,rev)), col=gray((0:32)/32), axes=F)
+image(t(apply(t(eigface2),2,rev)), col=gray((0:32)/32), axes=F)
+image(t(apply(t(eigface3),2,rev)), col=gray((0:32)/32), axes=F)
 
 # Question 3
 # Calculate the singular values and matrices in the singular value decomposition
@@ -120,11 +128,7 @@ min2<-optim(c(2,-2), question6)$par
 min3<-optim(c(2,2), question6)$par
 min4<-optim(c(-4,4), question6)$par
 # Find all maximums
-max1<-optim(c(-3,-4), question6, control=list(fnscale=-1))$par
-max2<-optim(c(4,-4), question6, control=list(fnscale=-1))$par
-max3<-optim(c(-4,4), question6, control=list(fnscale=-1))$par
-max4<-optim(c(4,4), question6, control=list(fnscale=-1))$par
-max5<-optim(c(0,0), question6, control=list(fnscale=-1))$par
+max1<-optim(c(0,0), question6, control=list(fnscale=-1))$par
 
 # Question 7
 experiment<-function(n) 
