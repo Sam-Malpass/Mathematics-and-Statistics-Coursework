@@ -61,7 +61,6 @@ covmat
 eigs<-eigen(covmat)$vectors
 eigs
 
-# DO THIS FOR ALL THREE SAM
 eigface1<-matrix(eigs[,1], nrow=51, byrow=TRUE)
 eigface2<-matrix(eigs[,2], nrow=51, byrow=TRUE)
 eigface3<-matrix(eigs[,3], nrow=51, byrow=TRUE)
@@ -95,7 +94,6 @@ eqsystem <- function (Time, State, Pars) {
         return(list(c(dx, dy)))
     })
 }
-# ODE is
 # ii) Run code to obtain solution for given values
 Pars <- c(a = 5, b = 0.01, c = 100, d = 0.01, g = 0.0001)
 State <- c(x = 10000, y = 60)
@@ -157,3 +155,32 @@ results<-c(results, experiment(val))
 }
 
 plot(testset, results, type="l")
+
+# Question 8
+# Generate m datasets with size nn from a binomial distributions
+generator<-function(nn, m)
+{
+p<-0.01
+trialsize<-10
+bd<-matrix(rbinom(m*nn, trialsize, p), nrow=nn, ncol=m)
+gen<-apply(bd, 2, mean)
+return(gen)
+}
+
+# get 10000 means fro two groups
+sample_means<-10000 # Declare number of means
+groups<-c(20,100) # declare group sizes
+means<-lapply(groups,generator,sample_means) # generate the means
+par(mfrow=c(1,length(means))) # set up the plots to show all samples
+# Plot all
+for(val in seq(1, length(groups),1)) 
+{
+	hist(means[[val]], main=paste("Sample Size", groups[val]), xlab="means")
+}
+# Calculate percentage of unique means in samples, this shows us that how the samples
+# approach a normal distribution with increased size
+for(val in seq(1,length(groups),1))
+{
+out<-(length(unique(means[[val]])) / groups[val] * 100)
+print(out)
+}
