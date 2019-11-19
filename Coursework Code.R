@@ -184,3 +184,24 @@ for(val in seq(1,length(groups),1))
 out<-(length(unique(means[[val]])) / groups[val] * 100)
 print(out)
 }
+
+# Question 9
+question9x<-rnorm(20,100,4)
+question9x
+noise<-rnorm(20,0,1)
+noise
+results<-c()
+for(i in 1:length(question9x))
+{
+tmp<-(2+question9x[i]+noise[i])
+results<-c(results, tmp)
+}
+par(
+plot(question9x,results)
+meanx<-mean(question9x)
+meany<-mean(results)
+abline(h=meany, v=meanx)
+unpaired<-t.test(question9x, results, paired=FALSE)
+unpaired
+paired<-t.test(question9x, results, paired=TRUE)
+paired
