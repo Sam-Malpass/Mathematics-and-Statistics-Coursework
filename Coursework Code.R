@@ -105,8 +105,28 @@ legend("topright", c("Fish", "Humans"), lty = c(1,2), col = c(1,2), box.lwd = 0)
 
 # iii) Find the values of X and Y where the system achieves equilibrium
 # One solution is x = 0, y = 0
-# Other solution is x = (a-by)/g, y = (dxy)/c
-
+Pars <- c(a = 5, b = 0.01, c = 100, d = 0.01, g = 0.0001)
+State <- c(x = 10000, y = 60)
+Time <- seq(0, 13, by = 0.1)
+out <-ode(func = eqsystem, y = State, parms = Pars, times = Time)
+matplot(out[,1], (out[,2:3]), type = "l", xlab = "time", ylab = "population")
+legend("topright", c("Fish", "Humans"), lty = c(1,2), col = c(1,2), box.lwd = 0)
+# Looking at graph we can see at time=12 system achieves equilibrium 
+# Find x
+Pars <- c(a = 5, b = 0.01, c = 100, d = 0.01, g = 0.0001)
+State <- c(x = 10000, y = 60)
+Time <- seq(0, 13, by = 0.1)
+out <-ode(func = eqsystem, y = State, parms = Pars, times = Time)
+matplot(out[,1], (out[,2:2]), type = "l", xlab = "time", ylab = "population")
+abline(h=10000, col="red")
+# Find y
+Pars <- c(a = 5, b = 0.01, c = 100, d = 0.01, g = 0.0001)
+State <- c(x = 10000, y = 60)
+Time <- seq(0, 13, by = 0.1)
+out <-ode(func = eqsystem, y = State, parms = Pars, times = Time)
+matplot(out[,1], (out[,3:3]), type = "l", xlab = "time", ylab = "population")
+abline(h=400, col="red")
+# So x = 10,000, y = 400 
 
 
 
