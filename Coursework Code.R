@@ -3,24 +3,24 @@
 
 # Question 1
 # Write R code to reproduce a graph
-v<-4	#Decide on arbitrary value for v
+v<-5	#Decide on arbitrary value for v
 alpha<-v/2 #create alpha
 beta<-2 #create beta
 avrg<- alpha * beta #create average
 std.dv<-sqrt(alpha*beta^2)	#create standard deviation
 range<-seq(0, avrg + 5 * std.dv, 0.01) #create range
-y=dgamma(range, alpha, rate=1/beta) #create the gamma function
+y=dchisq(range, df=v)
 plot(range,y,type='l', ylim=c(0,max(y)+0.01),bty="l",xaxt="n",yaxt="n",ylab="", xlab="x",xaxs="i", yaxs="i") #plot the gamma function
 axis(1, at=0, "0") # add zero to x axis
-axis(1, at=6, "a") # add a to x axis
-axis(1,at=10, "b") # add b to x axis
+axis(1, at=7.5, "a") # add a to x axis
+axis(1,at=12, "b") # add b to x axis
 title(main=expression(paste("X~",{Chi[v]}^{"2"})), cex.main=1.5) # add title
-text(10.5,0.125,cex=1.2, label=expression(paste("f(x)=",frac(1,2^frac("v",2)*Gamma*bgroup("(", frac("v",2), ")"))*paste("x"^paste(frac("v",2)-1),"e"^-frac("x",2), " , x>0")))) #add equation
-arrows(9.9,0.045, 8, 0.037, length=0.1, col="red", lwd=2) #add arrow
-text(12.75,0.045,cex=1.2, label=expression(paste("P(a<",Chi,"<b)=",integral(f(x)*dx,a,b)))) #add integral part
+text(11,0.125,cex=1.2, label=expression(paste("f(x)=",frac(1,2^frac("v",2)*Gamma*bgroup("(", frac("v",2), ")"))*paste("x"^paste(frac("v",2)-1),"e"^-frac("x",2), " , x>0")))) #add equation
+arrows(12,0.037, 9.7, 0.032, length=0.1, col="red", lwd=2) #add arrow
+text(14.5,0.038,cex=1.2, label=expression(paste("P(a<",Chi,"<b)=",integral(f(x)*dx,a,b)))) #add integral part
 
-cord.a=c(6,seq(min(6), 10, 0.01),10) #set x bounds
-cord.b=c(0, dgamma(seq(min(6), 10, 0.01),alpha,rate = 1/beta),0) #set y bounds
+cord.a=c(7.5,seq(min(7.5), 12, 0.01),12) #set x bounds
+cord.b=c(0, dchisq(seq(min(7.5), 12, 0.01), v), 0) #set y bounds
 polygon(cord.a,cord.b,col="blue") #plot the polygons in the bounds
 
 # Question 2
