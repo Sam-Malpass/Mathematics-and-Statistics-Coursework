@@ -14,6 +14,7 @@ plot(range,y,type='l', ylim=c(0,max(y)+0.01),bty="l",xaxt="n",yaxt="n",ylab="", 
 axis(1, at=0, "0") # add zero to x axis
 axis(1, at=7.5, "a") # add a to x axis
 axis(1,at=12, "b") # add b to x axis
+axis(2, at=0, " ") # add a little axis bit
 title(main=expression(paste("X~",{Chi[v]}^{"2"})), cex.main=1.5) # add title
 text(11,0.125,cex=1.2, label=expression(paste("f(x)=",frac(1,2^frac("v",2)*Gamma*bgroup("(", frac("v",2), ")"))*paste("x"^paste(frac("v",2)-1),"e"^-frac("x",2), " , x>0")))) #add equation
 arrows(12,0.037, 9.7, 0.032, length=0.1, col="red", lwd=2) #add arrow
