@@ -82,7 +82,6 @@ sv
 
 
 
-
 # Question 5
 # i) Write R code to solve a system of differential equations
 library(deSolve)
@@ -127,10 +126,6 @@ out <-ode(func = eqsystem, y = State, parms = Pars, times = Time)
 matplot(out[,1], (out[,3:3]), type = "l", xlab = "time", ylab = "population")
 abline(h=400, col="red")
 # So x = 10,000, y = 400 
-
-
-
-
 
 # Question 6
 question6<-function(vec) (vec[1]^2 + vec[2]-11)^2 + (vec[1] + vec[2]^2 - 7)^2
