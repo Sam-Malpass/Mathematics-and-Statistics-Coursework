@@ -77,10 +77,22 @@ sv<-svd(A)
 sv
 
 # Question 4
+library(deSolve)
+Ovini<-c(y=0, v=1, b=-(5/2))
+derivs.Test<-function(t, Ov, parms)
+{
+	with(as.list(c(Ov, parms)),
+	{
+		dy<-v
+		dy2<-b
+		dy3<-(exp(-t)+(1 * dy2)-(1 * dy)-y)
+		list(c(dy, dy2, dy3))
+	})
+}
 
-
-
-
+times<-seq(0,5,0.01)
+out.Test<-ode(y=Ovini, times=times, func=derivs.Test, parms=NULL)
+plot(out.Test[,"time"], out.Test[,"y"], type="l", xlab="time", ylab="O", col="green", lwd=2)
 
 # Question 5
 # i) Write R code to solve a system of differential equations
@@ -221,3 +233,7 @@ unpaired<-t.test(question9x, results, paired=FALSE)
 unpaired
 paired<-t.test(question9x, results, paired=TRUE)
 paired
+
+# Question 10
+data<-read.table("C:/Users/Sam/Documents/R Scripts/Mathematics-and-Statistics-Coursework/cheese.txt", header=TRUE, sep="\t")
+head(data)
