@@ -10,13 +10,13 @@ avrg<- alpha * beta #create average
 std.dv<-sqrt(alpha*beta^2)	#create standard deviation
 range<-seq(0, avrg + 5 * std.dv, 0.01) #create range
 y=dchisq(range, df=v)
-plot(range,y,type='l', ylim=c(0,max(y)+0.01),bty="l",xaxt="n",yaxt="n",ylab="", xlab="x",xaxs="i", yaxs="i") #plot the gamma function
+plot(range,y,type='l', ylim=c(0,max(y)+0.01),bty="l",xaxt="n",yaxt="n",ylab="", xlab="x",xaxs="i", yaxs="i", lwd=2) #plot the chi function
 axis(1, at=0, "0") # add zero to x axis
 axis(1, at=7.5, "a") # add a to x axis
 axis(1,at=12, "b") # add b to x axis
 axis(2, at=0, " ") # add a little axis bit
-title(main=expression(paste("X~",{Chi[v]}^{"2"})), cex.main=1.5) # add title
-text(11,0.125,cex=1.2, label=expression(paste("f(x)=",frac(1,2^frac("v",2)*Gamma*bgroup("(", frac("v",2), ")"))*paste("x"^paste(frac("v",2)-1),"e"^-frac("x",2), " , x>0")))) #add equation
+title(main=expression(paste("X~",chi[nu]^{"2"})), cex.main=1.5) # add title
+text(11,0.125,cex=1.2, label=expression(paste("f(x)=",frac(1,2^frac(nu,2)*Gamma*bgroup("(", frac(nu,2), ")"))*paste("x"^paste(frac(nu,2)-1),"e"^-frac("x",2), " , x>0")))) #add equation
 arrows(12,0.037, 9.7, 0.032, length=0.1, col="red", lwd=2) #add arrow
 text(14.5,0.038,cex=1.2, label=expression(paste("P(a<",Chi,"<b)=",integral(f(x)*dx,a,b)))) #add integral part
 
@@ -85,7 +85,7 @@ derivs.Test<-function(t, Ov, parms)
 	{
 		dy<-v
 		dy2<-b
-		dy3<-(exp(-t)+(1 * dy2)-(1 * dy)-y)
+		dy3<-(exp(-t)-(1 * dy2)+(1 * dy)+y)
 		list(c(dy, dy2, dy3))
 	})
 }
@@ -236,4 +236,36 @@ paired
 
 # Question 10
 data<-read.table("C:/Users/Sam/Documents/R Scripts/Mathematics-and-Statistics-Coursework/cheese.txt", header=TRUE, sep="\t")
+colnames(data)<-abbreviate(colnames(data)) # Abbreviate Column names
 head(data)
+
+# Part i
+processed<-data[-1] # Remove name data
+data.pca<-prcomp(processed,scale=TRUE) # Peform PCA
+data.pca
+plot(data.pca, xlim=rev(c(1,12))) # Scree plot lowest to highest
+
+# Part ii
+biplot(data.pca) # Biplot how nutrients affect PCA
+
+# Part iii
+summary(data.pca) # Get the summary
+# 10 components
+
+# Part iv
+component<-data.pca$rotation[,1] # Get First Principal Component
+# Cheddar is index 6, Edam is index 15
+calcScore<-function(A, B)
+{
+	total<-0
+	for(i in 1:length(A))
+	{
+		total<-total + (A[i] * B[i])
+	}
+	return(total)
+}
+cheddar_row<-data[6,-1]
+edam_row<-data[15, -1]
+cheddar_score<-calcScore(component, cheddar_row)
+edam_score<-calcScore(component, edam_row)
+edam_score
