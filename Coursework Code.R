@@ -268,4 +268,5 @@ cheddar_row<-data[6,-1]
 edam_row<-data[15, -1]
 cheddar_score<-calcScore(component, cheddar_row)
 edam_score<-calcScore(component, edam_row)
+cheddar_score
 edam_score
