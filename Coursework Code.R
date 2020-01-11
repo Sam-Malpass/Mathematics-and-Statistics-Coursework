@@ -10,13 +10,15 @@ avrg<- alpha * beta #create average
 std.dv<-sqrt(alpha*beta^2)	#create standard deviation
 range<-seq(0, avrg + 5 * std.dv, 0.01) #create range
 y=dchisq(range, df=v)
-plot(range,y,type='l', ylim=c(0,max(y)+0.01),bty="l",xaxt="n",yaxt="n",ylab="", xlab="x",xaxs="i", yaxs="i", lwd=2) #plot the chi function
+#plot the chi function
+plot(range,y,type='l', ylim=c(0,max(y)+0.01),bty="l",xaxt="n",yaxt="n",ylab="", xlab="x",xaxs="i", yaxs="i", lwd=1.2) 
 axis(1, at=0, "0") # add zero to x axis
 axis(1, at=7.5, "a") # add a to x axis
 axis(1,at=12, "b") # add b to x axis
 axis(2, at=0, " ") # add a little axis bit
 title(main=expression(paste("X~",chi[nu]^{"2"})), cex.main=1.5) # add title
-text(11,0.125,cex=1.2, label=expression(paste("f(x)=",frac(1,2^frac(nu,2)*Gamma*bgroup("(", frac(nu,2), ")"))*paste("x"^paste(frac(nu,2)-1),"e"^-frac("x",2), " , x>0")))) #add equation
+ #add equation
+text(12.2,0.125,cex=1.2, label=expression(paste("f(x)=",frac(1,2^frac(nu,2)*Gamma*bgroup("(", frac(nu,2), ")"))*paste("x"^paste(frac(nu,2)-1),"e"^-frac("x",2), " , x>0"))))
 arrows(12,0.037, 9.7, 0.032, length=0.1, col="red", lwd=2) #add arrow
 text(14.5,0.038,cex=1.2, label=expression(paste("P(a<",Chi,"<b)=",integral(f(x)*dx,a,b)))) #add integral part
 
@@ -49,6 +51,15 @@ image(t(apply(diff2,2,rev)),col = gray((0:32)/32),axes=F)
 diff3 <- face3 - av
 image(t(apply(diff3,2,rev)),col = gray((0:32)/32),axes=F)
 
+# Find average minus face instead
+par(mfrow=c(1,3))
+diff1 <- av - face1
+image(t(apply(diff1,2,rev)),col = gray((0:32)/32),axes=F)
+diff2 <- av - face2
+image(t(apply(diff2,2,rev)),col = gray((0:32)/32),axes=F)
+diff3 <- av - face3
+image(t(apply(diff3,2,rev)),col = gray((0:32)/32),axes=F)
+
 # iii) Based on the covariance matrix of differences calulate the eigenfaces
 #convert the matrices to vectors
 diffvec1<-as.vector(diff1)
@@ -58,9 +69,7 @@ diffvec3<-as.vector(diff3)
 diffall<-rbind(diffvec1,diffvec2,diffvec3)
 
 covmat<-cov(diffall)
-covmat
 eigs<-eigen(covmat)$vectors
-eigs
 
 eigface1<-matrix(eigs[,1], nrow=51, byrow=TRUE)
 eigface2<-matrix(eigs[,2], nrow=51, byrow=TRUE)
@@ -78,21 +87,27 @@ sv
 
 # Question 4
 library(deSolve)
-Ovini<-c(y=0, v=1, b=-(5/2))
+Ovini<-c(y=0, v=1, b=(-(5/2)))
 derivs.Test<-function(t, Ov, parms)
 {
 	with(as.list(c(Ov, parms)),
 	{
 		dy<-v
 		dy2<-b
-		dy3<-(exp(-t)-(1 * dy2)+(1 * dy)+y)
-		list(c(dy, dy2, dy3))
+		dy3<-exp(-t)-dy2+dy+y
+		list(c(dy3, dy2, dy))
 	})
 }
 
 times<-seq(0,5,0.01)
 out.Test<-ode(y=Ovini, times=times, func=derivs.Test, parms=NULL)
 plot(out.Test[,"time"], out.Test[,"y"], type="l", xlab="time", ylab="O", col="green", lwd=2)
+
+#tmp<-function(t) ((0)*exp(-t))+((1)*exp(-t)*t)+((0)*exp(t))-((1/4)*exp(-t)*(t^2))
+#curve(tmp, 0, 5, add=T, col="black", lty=2)
+
+tmp<-function(t) ((-2.25)*exp(-t))+((0)*exp(-t)*t)+((2.25)*exp(t))-((1/4)*exp(-t)*(t^2))
+curve(tmp, 0, 5, add=T, col="black", lty=2)
 
 # Question 5
 # i) Write R code to solve a system of differential equations
@@ -157,29 +172,29 @@ max1<-optim(c(0,0), question6, control=list(fnscale=-1))$par
 # Question 7
 experiment<-function(n) 
 {
-iterations<-seq(1,100000,1)
-actors<-seq(1,n,1)
-count<-0
-for(val in iterations)
-{
-babies<-sample(actors)
-for(i in 1:length(actors))
-{
-if(actors[i] == babies[i]) 
-{
-count<-count+1
-break
-}
-}
-}
-return(count / length(iterations))
+	iterations<-seq(1,100000,1)
+	actors<-seq(1,n,1)
+	count<-0
+	for(val in iterations)
+	{
+		babies<-sample(actors)
+		for(i in 1:length(actors))
+		{
+			if(actors[i] == babies[i]) 
+			{
+				count<-count+1
+				break
+			}
+		}
+	}
+	return(count / length(iterations))
 }
 
 testset<-seq(2,15,1)
 results<-c()
 for(val in testset)
 {
-results<-c(results, experiment(val))
+	results<-c(results, experiment(val))
 }
 
 plot(testset, results, type="l")
@@ -188,11 +203,11 @@ plot(testset, results, type="l")
 # Generate m datasets with size nn from a binomial distributions
 generator<-function(nn, m)
 {
-p<-0.01
-trialsize<-10
-bd<-matrix(rbinom(m*nn, trialsize, p), nrow=nn, ncol=m)
-gen<-apply(bd, 2, mean)
-return(gen)
+	p<-0.01
+	trialsize<-10
+	bd<-matrix(rbinom(m*nn, trialsize, p), nrow=nn, ncol=m)
+	gen<-apply(bd, 2, mean)
+	return(gen)
 }
 
 # get 10000 means fro two groups
@@ -209,26 +224,25 @@ for(val in seq(1, length(groups),1))
 # approach a normal distribution with increased size
 for(val in seq(1,length(groups),1))
 {
-out<-(length(unique(means[[val]])) / groups[val] * 100)
-print(out)
+	out<-(length(unique(means[[val]])) / groups[val] * 100)
+	print(out)
 }
 
 # Question 9
 question9x<-rnorm(20,100,4)
-question9x
 noise<-rnorm(20,0,1)
-noise
 results<-c()
 for(i in 1:length(question9x))
 {
-tmp<-(2+question9x[i]+noise[i])
-results<-c(results, tmp)
+	tmp<-(2+question9x[i]+noise[i])
+	results<-c(results, tmp)
 }
-par(
+
 plot(question9x,results)
 meanx<-mean(question9x)
 meany<-mean(results)
 abline(h=meany, v=meanx)
+
 unpaired<-t.test(question9x, results, paired=FALSE)
 unpaired
 paired<-t.test(question9x, results, paired=TRUE)
@@ -254,6 +268,7 @@ summary(data.pca) # Get the summary
 
 # Part iv
 component<-data.pca$rotation[,1] # Get First Principal Component
+component
 # Cheddar is index 6, Edam is index 15
 calcScore<-function(A, B)
 {
