@@ -9,7 +9,7 @@ beta<-2 #create beta
 avrg<- alpha * beta #create average
 std.dv<-sqrt(alpha*beta^2)	#create standard deviation
 range<-seq(0, avrg + 5 * std.dv, 0.01) #create range
-y=dchisq(range, df=v)
+y=dchisq(range, df=v)#Define the chi squared function
 #plot the chi function
 plot(range,y,type='l', ylim=c(0,max(y)+0.01),bty="l",xaxt="n",yaxt="n",ylab="", xlab="x",xaxs="i", yaxs="i", lwd=1.2) 
 axis(1, at=0, "0") # add zero to x axis
@@ -17,8 +17,7 @@ axis(1, at=7.5, "a") # add a to x axis
 axis(1,at=12, "b") # add b to x axis
 axis(2, at=0, " ") # add a little axis bit
 title(main=expression(paste("X~",chi[nu]^{"2"})), cex.main=1.5) # add title
- #add equation
-text(12.2,0.125,cex=1.2, label=expression(paste("f(x)=",frac(1,2^frac(nu,2)*Gamma*bgroup("(", frac(nu,2), ")"))*paste("x"^paste(frac(nu,2)-1),"e"^-frac("x",2), " , x>0"))))
+text(12.2,0.125,cex=1.2, label=expression(paste("f(x)=",frac(1,2^frac(nu,2)*Gamma*bgroup("(", frac(nu,2), ")"))*paste("x"^paste(frac(nu,2)-1),"e"^-frac("x",2), " , x>0"))))#add equation
 arrows(12,0.037, 9.7, 0.032, length=0.1, col="red", lwd=2) #add arrow
 text(14.5,0.038,cex=1.2, label=expression(paste("P(a<",Chi,"<b)=",integral(f(x)*dx,a,b)))) #add integral part
 
@@ -68,9 +67,11 @@ diffvec3<-as.vector(diff3)
 #concatenate all the vectors
 diffall<-rbind(diffvec1,diffvec2,diffvec3)
 
+#Calculate covariance matrix and eigenvectors
 covmat<-cov(diffall)
 eigs<-eigen(covmat)$vectors
 
+#Retrieve and Plot first the three eigenfaces
 eigface1<-matrix(eigs[,1], nrow=51, byrow=TRUE)
 eigface2<-matrix(eigs[,2], nrow=51, byrow=TRUE)
 eigface3<-matrix(eigs[,3], nrow=51, byrow=TRUE)
@@ -86,6 +87,7 @@ sv<-svd(A)
 sv
 
 # Question 4
+# Set up differential System
 library(deSolve)
 Ovini<-c(y=0, v=1, b=(-(5/2)))
 derivs.Test<-function(t, Ov, parms)
@@ -98,20 +100,24 @@ derivs.Test<-function(t, Ov, parms)
 		list(c(dy3, dy2, dy))
 	})
 }
-
+# Set the time interval
 times<-seq(0,5,0.01)
+# calculate and plot the solution
 out.Test<-ode(y=Ovini, times=times, func=derivs.Test, parms=NULL)
 plot(out.Test[,"time"], out.Test[,"y"], type="l", xlab="time", ylab="O", col="green", lwd=2)
 
+# Code using the calculated numbers
 #tmp<-function(t) ((0)*exp(-t))+((1)*exp(-t)*t)+((0)*exp(t))-((1/4)*exp(-t)*(t^2))
 #curve(tmp, 0, 5, add=T, col="black", lty=2)
 
+# Code using approximated numbers
 tmp<-function(t) ((-2.25)*exp(-t))+((0)*exp(-t)*t)+((2.25)*exp(t))-((1/4)*exp(-t)*(t^2))
 curve(tmp, 0, 5, add=T, col="black", lty=2)
 
 # Question 5
 # i) Write R code to solve a system of differential equations
 library(deSolve)
+# Set up the system
 eqsystem <- function (Time, State, Pars) {
 	x <- State[1]
 	y <- State[2]
@@ -131,6 +137,7 @@ legend("topright", c("Fish", "Humans"), lty = c(1,2), col = c(1,2), box.lwd = 0)
 
 # iii) Find the values of X and Y where the system achieves equilibrium
 # One solution is x = 0, y = 0
+# Find the rough time at which equilibrium is achieved
 Pars <- c(a = 5, b = 0.01, c = 100, d = 0.01, g = 0.0001)
 State <- c(x = 10000, y = 60)
 Time <- seq(0, 13, by = 0.1)
@@ -155,6 +162,7 @@ abline(h=400, col="red")
 # So x = 10,000, y = 400 
 
 # Question 6
+# Create a function for the equation both for values and optim
 question6<-function(vec) (vec[1]^2 + vec[2]-11)^2 + (vec[1] + vec[2]^2 - 7)^2
 func<-function(x1,y1) (x1^2 + y1 - 11)^2 + (x1 + y1^2 - 7)^2
 question6x<- seq(-4.5, 4.5, length.out=50)
@@ -170,47 +178,48 @@ min4<-optim(c(-4,4), question6)$par
 max1<-optim(c(0,0), question6, control=list(fnscale=-1))$par
 
 # Question 7
+# Create experiment functions
 experiment<-function(n) 
 {
-	iterations<-seq(1,100000,1)
-	actors<-seq(1,n,1)
-	count<-0
-	for(val in iterations)
+	iterations<-seq(1,100000,1) # Define iterations
+	actors<-seq(1,n,1) # Set up the actors
+	count<-0 # Set the count to zero
+	for(val in iterations) # for all iterations
 	{
-		babies<-sample(actors)
-		for(i in 1:length(actors))
+		babies<-sample(actors) # randomly sample actors for the babies (Two vectors of the same number, but different order)
+		for(i in 1:length(actors)) # for all the actors
 		{
-			if(actors[i] == babies[i]) 
+			if(actors[i] == babies[i]) # if the actor matches the baby at the same index
 			{
-				count<-count+1
+				count<-count+1 # increment the count
 				break
 			}
 		}
 	}
-	return(count / length(iterations))
+	return(count / length(iterations)) # calculate the average number of matches
 }
 
-testset<-seq(2,15,1)
-results<-c()
-for(val in testset)
+testset<-seq(2,15,1) # create the test set vector
+results<-c() # create the empty vector
+for(val in testset) # for all the test vals
 {
-	results<-c(results, experiment(val))
+	results<-c(results, experiment(val)) # run the experiment
 }
 
-plot(testset, results, type="l")
+plot(testset, results, type="l") # plot the results
 
 # Question 8
 # Generate m datasets with size nn from a binomial distributions
 generator<-function(nn, m)
 {
-	p<-0.01
-	trialsize<-10
-	bd<-matrix(rbinom(m*nn, trialsize, p), nrow=nn, ncol=m)
+	p<-0.01 # set the p value
+	trialsize<-10 # set the trial size
+	bd<-matrix(rbinom(m*nn, trialsize, p), nrow=nn, ncol=m) # create the distribution
 	gen<-apply(bd, 2, mean)
 	return(gen)
 }
 
-# get 10000 means fro two groups
+# get 10000 means from two groups
 sample_means<-10000 # Declare number of means
 groups<-c(20,100) # declare group sizes
 means<-lapply(groups,generator,sample_means) # generate the means
@@ -229,26 +238,28 @@ for(val in seq(1,length(groups),1))
 }
 
 # Question 9
+# Create the normal distribution
 question9x<-rnorm(20,100,4)
-noise<-rnorm(20,0,1)
-results<-c()
-for(i in 1:length(question9x))
+noise<-rnorm(20,0,1) # create the noise distribution
+results<-c() # declare results array
+for(i in 1:length(question9x)) # for all data points
 {
-	tmp<-(2+question9x[i]+noise[i])
-	results<-c(results, tmp)
+	tmp<-(2+question9x[i]+noise[i]) # create a value
+	results<-c(results, tmp) # add to the new vector
 }
 
-plot(question9x,results)
-meanx<-mean(question9x)
-meany<-mean(results)
-abline(h=meany, v=meanx)
+plot(question9x,results) # plot the results
+meanx<-mean(question9x) # get the mean of x
+meany<-mean(results) # get the mean of the other sample
+abline(h=meany, v=meanx) # draw the lines for the samples
 
-unpaired<-t.test(question9x, results, paired=FALSE)
+unpaired<-t.test(question9x, results, paired=FALSE) # do an unpaired test
 unpaired
-paired<-t.test(question9x, results, paired=TRUE)
+paired<-t.test(question9x, results, paired=TRUE) # do a paired test
 paired
 
 # Question 10
+# read the data
 data<-read.table("C:/Users/Sam/Documents/R Scripts/Mathematics-and-Statistics-Coursework/cheese.txt", header=TRUE, sep="\t")
 colnames(data)<-abbreviate(colnames(data)) # Abbreviate Column names
 head(data)
@@ -270,14 +281,14 @@ summary(data.pca) # Get the summary
 component<-data.pca$rotation[,1] # Get First Principal Component
 component
 # Cheddar is index 6, Edam is index 15
-calcScore<-function(A, B)
+calcScore<-function(A, B) # Calc score function
 {
-	total<-0
-	for(i in 1:length(A))
+	total<-0 # total is 0
+	for(i in 1:length(A)) # for all the elements in the vector
 	{
-		total<-total + (A[i] * B[i])
+		total<-total + (A[i] * B[i]) # times each element by the same element in the principle component score vector
 	}
-	return(total)
+	return(total) # return the score
 }
 cheddar_row<-data[6,-1]
 edam_row<-data[15, -1]
